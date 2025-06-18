@@ -22,7 +22,7 @@ export default function AnimatedHeader() {
             isHovered ? 'opacity-0' : 'opacity-100'
           }`}
         >
-          E.D.I.T.H
+          E.D.I.T.H.
         </h1>
         
         {/* 네비게이션 메뉴 */}
