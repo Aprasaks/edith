@@ -134,29 +134,8 @@ export default function VoiceRecognition({ onEdithDetected }) {
   }
 
   return (
-    <div className="absolute bottom-4 left-4 z-50">
-      <div className="bg-black/70 border border-cyan-400/30 rounded-lg p-3 backdrop-blur-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <div 
-            className={`w-3 h-3 rounded-full transition-all ${
-              isCompleted ? 'bg-gray-400' : isListening ? 'bg-green-400 animate-pulse' : 'bg-red-400'
-            }`}
-          />
-          <span className="text-xs text-cyan-400 font-mono">
-            {isCompleted ? 'COMPLETE' : isListening ? 'LISTENING...' : 'STANDBY'}
-          </span>
-        </div>
-        
-        {/* 테스트 버튼 */}
-        {!isCompleted && (
-          <button
-            onClick={testEdith}
-            className="w-full bg-green-400/20 border border-green-400/50 text-green-400 px-2 py-1 rounded text-xs font-semibold hover:bg-green-400/30 transition-colors"
-          >
-            🧠 테스트
-          </button>
-        )}
-      </div>
+    <div>
+      
     </div>
   )
 }

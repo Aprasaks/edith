@@ -7,8 +7,14 @@ export default function AnimatedHeader() {
 
   return (
     <header className="flex justify-between items-center p-6 bg-black/80 border-b border-cyan-400/30 backdrop-blur-md">
-      {/* 좌측 빈 공간 (균형 맞추기 위해) */}
-      <div className="w-20"></div>
+      {/* 좌측 - 커피 버튼 */}
+      <a 
+        href="https://www.buymeacoffee.com/demiandev" 
+        target="_blank"
+        className="inline-flex items-center px-4 py-2 bg-cyan-500/20 border border-cyan-400/50 text-cyan-400 rounded-lg hover:bg-cyan-500/30 hover:text-cyan-300 transition-all duration-200 backdrop-blur-sm font-medium"
+      >
+        ☕ Buy me a coffee
+      </a>
 
       {/* 중앙 - 제목/네비게이션 영역 */}
       <div 
