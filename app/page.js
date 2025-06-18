@@ -48,17 +48,19 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen bg-black text-cyan-400 relative overflow-hidden flex flex-col">
+    <div className="h-screen bg-black text-white relative overflow-hidden flex flex-col" style={{
+      textShadow: '0 0 3px rgba(255,255,255,0.3)',
+    }}>
       {/* 배경 효과 */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
       
       {/* 간단한 그리드 효과 */}
       <div 
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
-            linear-gradient(cyan 1px, transparent 1px),
-            linear-gradient(90deg, cyan 1px, transparent 1px)
+            linear-gradient(white 1px, transparent 1px),
+            linear-gradient(90deg, white 1px, transparent 1px)
           `,
           backgroundSize: '50px 50px'
         }}
@@ -74,19 +76,28 @@ export default function Home() {
         {/* 좌측 - 시스템 상태 + 채팅창 */}
         <div className="w-1/4 flex flex-col gap-6">
           {/* 상단 - 시스템 상태 */}
-          <div className="bg-cyan-900/20 border border-cyan-400/30 rounded-2xl p-4 backdrop-blur-sm shadow-2xl shadow-cyan-400/20 flex-shrink-0">
-            <h2 className="text-lg font-semibold mb-3 text-cyan-300">시스템 상태</h2>
+          <div className="bg-white/10 border border-white/40 rounded-2xl p-4 backdrop-blur-sm flex-shrink-0"
+               style={{
+                 boxShadow: '0 0 15px rgba(255,255,255,0.1), inset 0 0 10px rgba(255,255,255,0.05)'
+               }}>
+            <h2 className="text-lg font-semibold mb-3 text-white" 
+                style={{ textShadow: '0 0 6px rgba(255,255,255,0.4)' }}>
+              시스템 상태
+            </h2>
             <div className="space-y-3">
-              <div className="bg-black/30 p-2 rounded border border-cyan-400/20 text-center">
-                <p className="text-lg font-bold text-cyan-400">12</p>
+              <div className="bg-black/30 p-2 rounded border border-white/30 text-center"
+                   style={{ boxShadow: '0 0 8px rgba(255,255,255,0.1)' }}>
+                <p className="text-lg font-bold text-white" style={{ textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>12</p>
                 <p className="text-xs opacity-80">활성 모듈</p>
               </div>
-              <div className="bg-black/30 p-2 rounded border border-cyan-400/20 text-center">
-                <p className="text-lg font-bold text-cyan-400">1.2k</p>
+              <div className="bg-black/30 p-2 rounded border border-white/30 text-center"
+                   style={{ boxShadow: '0 0 8px rgba(255,255,255,0.1)' }}>
+                <p className="text-lg font-bold text-white" style={{ textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>1.2k</p>
                 <p className="text-xs opacity-80">데이터 스트림</p>
               </div>
-              <div className="bg-black/30 p-2 rounded border border-cyan-400/20 text-center">
-                <p className="text-lg font-bold text-cyan-400">96</p>
+              <div className="bg-black/30 p-2 rounded border border-white/30 text-center"
+                   style={{ boxShadow: '0 0 8px rgba(255,255,255,0.1)' }}>
+                <p className="text-lg font-bold text-white" style={{ textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>96</p>
                 <p className="text-xs opacity-80">연속 운영일</p>
               </div>
             </div>
@@ -100,25 +111,35 @@ export default function Home() {
 
         {/* 중앙 - 이디스 홀로그램 영역 */}
         <div className="flex-1">
-          <div className="bg-black/40 border border-cyan-400/50 rounded-2xl h-full flex flex-col justify-center items-center relative overflow-hidden backdrop-blur-md shadow-2xl shadow-cyan-400/30">
+          <div className="bg-black/40 border border-white/50 rounded-2xl h-full flex flex-col justify-center items-center relative overflow-hidden backdrop-blur-md"
+               style={{
+                 boxShadow: '0 0 20px rgba(255,255,255,0.15), inset 0 0 15px rgba(255,255,255,0.05)'
+               }}>
             
             {!isEdithActive ? (
               // 이디스 비활성 상태 - 빈 화면
               <div className="text-center space-y-4">
-                <p className="text-cyan-400/60 font-mono">시스템을 활성화하세요</p>
+                <p className="text-white/60 font-mono">시스템을 활성화하세요</p>
                 
                 {/* 이디스 호출 버튼 */}
                 <button
                   onClick={handleEdithDetected}
-                  className="mt-6 px-6 py-3 bg-cyan-400/20 border border-cyan-400/50 text-cyan-400 rounded-lg font-semibold hover:bg-cyan-400/30 transition-all transform hover:scale-105"
+                  className="mt-6 px-6 py-3 bg-white/20 border border-white/50 text-white rounded-lg font-semibold hover:bg-white/30 transition-all transform hover:scale-105"
+                  style={{
+                    boxShadow: '0 0 12px rgba(255,255,255,0.2)',
+                    textShadow: '0 0 5px rgba(255,255,255,0.4)'
+                  }}
                 >
                   🧠 E.D.I.T.H 활성화
                 </button>
                 
                 <div className="flex justify-center space-x-1 mt-4">
-                  <div className="w-2 h-2 bg-cyan-400/40 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-cyan-400/40 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-cyan-400/40 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                  <div className="w-2 h-2 bg-white/50 rounded-full animate-pulse" 
+                       style={{ boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}></div>
+                  <div className="w-2 h-2 bg-white/50 rounded-full animate-pulse" 
+                       style={{ animationDelay: '0.2s', boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}></div>
+                  <div className="w-2 h-2 bg-white/50 rounded-full animate-pulse" 
+                       style={{ animationDelay: '0.4s', boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}></div>
                 </div>
               </div>
             ) : (
@@ -131,39 +152,42 @@ export default function Home() {
                 
                 {/* 홀로그램 오버레이 효과들 - 마우스 이벤트 차단하지 않음 */}
                 <div className="absolute inset-0 bg-black/20 rounded-2xl pointer-events-none z-10"></div>
-                <div className="absolute inset-0 bg-gradient-radial from-transparent via-cyan-400/3 to-transparent pointer-events-none z-10"></div>
+                <div className="absolute inset-0 bg-gradient-radial from-transparent via-white/3 to-transparent pointer-events-none z-10"></div>
                 
                 
                 {/* HUD 오버레이 */}
                 <div className="absolute top-4 left-4 space-y-1 z-30 opacity-80 pointer-events-none">
-                  <div className="text-xs text-cyan-400 font-mono bg-black/70 px-2 py-1 rounded border border-cyan-400/30 backdrop-blur-sm">
+                  <div className="text-xs text-white font-mono bg-black/70 px-2 py-1 rounded border border-white/40 backdrop-blur-sm"
+                       style={{ boxShadow: '0 0 6px rgba(255,255,255,0.2)', textShadow: '0 0 4px rgba(255,255,255,0.4)' }}>
                     NEURAL_SCAN: ACTIVE
                   </div>
-                  <div className="text-xs text-cyan-400 font-mono bg-black/70 px-2 py-1 rounded border border-cyan-400/30 backdrop-blur-sm">
+                  <div className="text-xs text-white font-mono bg-black/70 px-2 py-1 rounded border border-white/40 backdrop-blur-sm"
+                       style={{ boxShadow: '0 0 6px rgba(255,255,255,0.2)', textShadow: '0 0 4px rgba(255,255,255,0.4)' }}>
                     STATUS: ONLINE
                   </div>
-                  <div className="text-xs text-cyan-400 font-mono bg-black/70 px-2 py-1 rounded border border-cyan-400/30 backdrop-blur-sm animate-pulse">
+                  <div className="text-xs text-white font-mono bg-black/70 px-2 py-1 rounded border border-white/40 backdrop-blur-sm animate-pulse"
+                       style={{ boxShadow: '0 0 6px rgba(255,255,255,0.2)', textShadow: '0 0 4px rgba(255,255,255,0.4)' }}>
                     BRAIN_ACTIVITY: 87%
                   </div>
                 </div>
                 
                 {/* 우측 상단 HUD */}
                 <div className="absolute top-4 right-4 space-y-1 z-30 opacity-80 pointer-events-none">
-                  <div className="text-xs text-cyan-400 font-mono bg-black/70 px-2 py-1 rounded border border-cyan-400/30 backdrop-blur-sm">
+                  <div className="text-xs text-white font-mono bg-black/70 px-2 py-1 rounded border border-white/30 backdrop-blur-sm">
                     RESOLUTION: 4K
                   </div>
-                  <div className="text-xs text-cyan-400 font-mono bg-black/70 px-2 py-1 rounded border border-cyan-400/30 backdrop-blur-sm">
+                  <div className="text-xs text-white font-mono bg-black/70 px-2 py-1 rounded border border-white/30 backdrop-blur-sm">
                     FPS: 60
                   </div>
                 </div>
                 
                 {/* 하단 상태 표시 */}
                 <div className="absolute bottom-6 left-6 right-6 z-30 pointer-events-none">
-                  <div className="bg-black/70 border border-cyan-400/40 rounded-lg p-4 backdrop-blur-sm">
-                    <p className="text-center text-cyan-300 font-mono">시스템 활성화 완료</p>
+                  <div className="bg-black/70 border border-white/40 rounded-lg p-4 backdrop-blur-sm">
+                    <p className="text-center text-white/90 font-mono">시스템 활성화 완료</p>
                     <div className="flex justify-center mt-2">
                       <button 
-                        className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors pointer-events-auto"
+                        className="text-xs text-white/80 hover:text-white transition-colors pointer-events-auto"
                         onClick={() => setIsEdithActive(false)}
                       >
                         비활성화
@@ -174,20 +198,20 @@ export default function Home() {
                 
                 {/* 스캔라인 효과 */}
                 <div className="absolute inset-0 pointer-events-none z-15">
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 animate-pulse"></div>
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 animate-pulse" 
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-70 animate-pulse"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-70 animate-pulse" 
                        style={{ animationDelay: '1s' }}></div>
-                  <div className="absolute top-0 bottom-0 left-0 w-0.5 bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-50 animate-pulse"
+                  <div className="absolute top-0 bottom-0 left-0 w-0.5 bg-gradient-to-b from-transparent via-white to-transparent opacity-50 animate-pulse"
                        style={{ animationDelay: '0.5s' }}></div>
-                  <div className="absolute top-0 bottom-0 right-0 w-0.5 bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-50 animate-pulse"
+                  <div className="absolute top-0 bottom-0 right-0 w-0.5 bg-gradient-to-b from-transparent via-white to-transparent opacity-50 animate-pulse"
                        style={{ animationDelay: '1.5s' }}></div>
                 </div>
                 
                 {/* 코너 프레임 효과 */}
-                <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-cyan-400 opacity-60 z-15 pointer-events-none"></div>
-                <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-cyan-400 opacity-60 z-15 pointer-events-none"></div>
-                <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-cyan-400 opacity-60 z-15 pointer-events-none"></div>
-                <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-cyan-400 opacity-60 z-15 pointer-events-none"></div>
+                <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-white opacity-60 z-15 pointer-events-none"></div>
+                <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-white opacity-60 z-15 pointer-events-none"></div>
+                <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-white opacity-60 z-15 pointer-events-none"></div>
+                <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-white opacity-60 z-15 pointer-events-none"></div>
               </>
             )}
           </div>

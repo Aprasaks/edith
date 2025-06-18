@@ -137,15 +137,26 @@ export default function TodoList({ selectedDate = null }) {
   const completedCount = todos.filter(todo => todo.completed).length
 
   return (
-    <div className="bg-cyan-900/20 border border-cyan-400/30 rounded-2xl p-4 flex-1 text-cyan-400 backdrop-blur-sm shadow-2xl shadow-cyan-400/20">
+    <div className="bg-white/10 border border-white/40 rounded-2xl p-4 flex-1 text-white backdrop-blur-sm"
+         style={{
+           boxShadow: '0 0 15px rgba(255,255,255,0.1), inset 0 0 10px rgba(255,255,255,0.05)',
+           textShadow: '0 0 3px rgba(255,255,255,0.3)'
+         }}>
       {/* 헤더 */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-cyan-300">투두리스트</h3>
+        <h3 className="text-lg font-semibold text-white"
+            style={{ textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>
+          투두리스트
+        </h3>
         <p className="text-sm opacity-80">{formatDate(currentDate)}</p>
         {todos.length > 0 && (
-          <div className="flex justify-between items-center mt-2 bg-black/20 rounded px-2 py-1 border border-cyan-400/20">
+          <div className="flex justify-between items-center mt-2 bg-black/20 rounded px-2 py-1 border border-white/25"
+               style={{ boxShadow: '0 0 6px rgba(255,255,255,0.1)' }}>
             <p className="text-xs opacity-60">진행률</p>
-            <p className="text-xs text-cyan-300">{completedCount}/{todos.length} 완료</p>
+            <p className="text-xs text-white"
+               style={{ textShadow: '0 0 4px rgba(255,255,255,0.4)' }}>
+              {completedCount}/{todos.length} 완료
+            </p>
           </div>
         )}
       </div>
@@ -160,12 +171,20 @@ export default function TodoList({ selectedDate = null }) {
             onKeyPress={handleKeyPress}
             placeholder="새 할 일 입력..."
             disabled={loading}
-            className="flex-1 px-3 py-2 text-sm bg-black/30 border border-cyan-400/30 rounded outline-none placeholder-cyan-400/60 text-cyan-300 focus:border-cyan-400/60 disabled:opacity-50"
+            className="flex-1 px-3 py-2 text-sm bg-black/30 border border-white/30 rounded outline-none placeholder-white/60 text-white focus:border-white/50 disabled:opacity-50"
+            style={{
+              boxShadow: '0 0 6px rgba(255,255,255,0.1)',
+              textShadow: '0 0 3px rgba(255,255,255,0.3)'
+            }}
           />
           <button
             onClick={addTodo}
             disabled={loading || !newTask.trim()}
-            className="px-3 py-2 bg-cyan-400/20 border border-cyan-400/50 text-cyan-400 rounded text-sm font-semibold hover:bg-cyan-400/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-2 bg-white/20 border border-white/40 text-white rounded text-sm font-semibold hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              boxShadow: '0 0 8px rgba(255,255,255,0.15)',
+              textShadow: '0 0 4px rgba(255,255,255,0.4)'
+            }}
           >
             {loading ? '⏳' : '➕'}
           </button>
@@ -176,11 +195,18 @@ export default function TodoList({ selectedDate = null }) {
       <div className="space-y-2 max-h-48 overflow-y-auto">
         {loading && todos.length === 0 ? (
           <div className="text-center py-8 opacity-60">
-            <p className="text-sm text-cyan-300">로딩 중...</p>
+            <p className="text-sm text-white"
+               style={{ textShadow: '0 0 4px rgba(255,255,255,0.3)' }}>
+              로딩 중...
+            </p>
           </div>
         ) : todos.length === 0 ? (
-          <div className="text-center py-8 opacity-60 bg-black/20 rounded border border-cyan-400/10">
-            <p className="text-sm text-cyan-300">아직 할 일이 없어요</p>
+          <div className="text-center py-8 opacity-60 bg-black/20 rounded border border-white/15"
+               style={{ boxShadow: '0 0 6px rgba(255,255,255,0.05)' }}>
+            <p className="text-sm text-white"
+               style={{ textShadow: '0 0 4px rgba(255,255,255,0.3)' }}>
+              아직 할 일이 없어요
+            </p>
             <p className="text-xs mt-1 opacity-80">위에서 새로 추가해보세요!</p>
           </div>
         ) : (
@@ -189,27 +215,40 @@ export default function TodoList({ selectedDate = null }) {
               key={todo.id}
               className={`flex items-center gap-2 p-2 rounded transition-all border ${
                 todo.completed 
-                  ? 'bg-black/20 opacity-70 border-cyan-400/20' 
-                  : 'bg-cyan-400/10 hover:bg-cyan-400/20 border-cyan-400/30 hover:border-cyan-400/50'
+                  ? 'bg-black/20 opacity-70 border-white/20' 
+                  : 'bg-white/10 hover:bg-white/20 border-white/30 hover:border-white/50'
               }`}
+              style={{
+                boxShadow: todo.completed 
+                  ? '0 0 4px rgba(255,255,255,0.05)' 
+                  : '0 0 8px rgba(255,255,255,0.1)'
+              }}
             >
               {/* 체크박스 */}
               <input
                 type="checkbox"
                 checked={todo.completed}
                 onChange={() => toggleTodo(todo.id, todo.completed)}
-                className="w-4 h-4 accent-cyan-400 cursor-pointer"
+                className="w-4 h-4 accent-white cursor-pointer"
                 disabled={loading}
+                style={{
+                  filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.3))'
+                }}
               />
               
               {/* 할 일 텍스트 */}
               <span
                 className={`flex-1 text-sm cursor-pointer ${
                   todo.completed 
-                    ? 'line-through opacity-60 text-cyan-400/60' 
-                    : 'text-cyan-300'
+                    ? 'line-through opacity-60 text-white/60' 
+                    : 'text-white'
                 }`}
                 onClick={() => !loading && toggleTodo(todo.id, todo.completed)}
+                style={{
+                  textShadow: todo.completed 
+                    ? '0 0 2px rgba(255,255,255,0.2)' 
+                    : '0 0 3px rgba(255,255,255,0.3)'
+                }}
               >
                 {todo.task}
               </span>
@@ -218,7 +257,11 @@ export default function TodoList({ selectedDate = null }) {
               <button
                 onClick={() => deleteTodo(todo.id)}
                 disabled={loading}
-                className="text-red-400 hover:text-red-300 transition-colors text-sm px-1 opacity-70 hover:opacity-100 disabled:opacity-50"
+                className="text-red-300 hover:text-red-200 transition-colors text-sm px-1 opacity-70 hover:opacity-100 disabled:opacity-50"
+                style={{
+                  textShadow: '0 0 3px rgba(255,100,100,0.3)',
+                  filter: 'drop-shadow(0 0 2px rgba(255,100,100,0.2))'
+                }}
               >
                 🗑️
               </button>
@@ -229,15 +272,23 @@ export default function TodoList({ selectedDate = null }) {
 
       {/* 통계 */}
       {todos.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-cyan-400/30">
-          <div className="w-full bg-black/30 rounded-full h-2 border border-cyan-400/20">
+        <div className="mt-4 pt-3 border-t border-white/30">
+          <div className="w-full bg-black/30 rounded-full h-2 border border-white/25"
+               style={{ boxShadow: '0 0 6px rgba(255,255,255,0.1)' }}>
             <div 
-              className="bg-gradient-to-r from-cyan-400 to-cyan-300 h-2 rounded-full transition-all duration-300 shadow-sm shadow-cyan-400/50"
-              style={{ width: `${(completedCount / todos.length) * 100}%` }}
+              className="bg-gradient-to-r from-white to-white/80 h-2 rounded-full transition-all duration-300"
+              style={{ 
+                width: `${(completedCount / todos.length) * 100}%`,
+                boxShadow: '0 0 8px rgba(255,255,255,0.3)'
+              }}
             />
           </div>
           <div className="flex justify-center mt-2">
-            <span className="text-xs text-cyan-300 bg-black/20 px-2 py-1 rounded border border-cyan-400/20">
+            <span className="text-xs text-white bg-black/20 px-2 py-1 rounded border border-white/25"
+                  style={{
+                    boxShadow: '0 0 6px rgba(255,255,255,0.1)',
+                    textShadow: '0 0 4px rgba(255,255,255,0.4)'
+                  }}>
               {Math.round((completedCount / todos.length) * 100)}% 완료
             </span>
           </div>

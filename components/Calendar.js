@@ -52,6 +52,7 @@ export default function Calendar({ onDateSelect }) {
     const dateString = `${year}-${month}-${dayStr}`
     onDateSelect?.(dateString)
   }
+  
   const isToday = (day) => {
     return day === today.getDate() && 
            currentDate.getMonth() === today.getMonth() && 
@@ -68,22 +69,40 @@ export default function Calendar({ onDateSelect }) {
   }
 
   return (
-    <div className="bg-cyan-900/20 border border-cyan-400/30 rounded-2xl p-4 flex-1 text-cyan-400 backdrop-blur-sm shadow-2xl shadow-cyan-400/20">
+    <div className="bg-white/10 border border-white/40 rounded-2xl p-4 flex-1 text-white backdrop-blur-sm"
+         style={{
+           boxShadow: '0 0 15px rgba(255,255,255,0.1), inset 0 0 10px rgba(255,255,255,0.05)',
+           textShadow: '0 0 3px rgba(255,255,255,0.3)'
+         }}>
       {/* 헤더 */}
       <div className="flex justify-between items-center mb-4">
         <button 
           onClick={goToPreviousMonth}
-          className="text-cyan-400 hover:text-cyan-300 transition-colors text-lg font-bold bg-black/30 w-8 h-8 rounded border border-cyan-400/20 hover:border-cyan-400/40"
+          className="text-white hover:text-white/80 transition-colors text-lg font-bold bg-black/30 w-8 h-8 rounded border border-white/30 hover:border-white/50"
+          style={{
+            boxShadow: '0 0 6px rgba(255,255,255,0.15)',
+            textShadow: '0 0 4px rgba(255,255,255,0.4)'
+          }}
         >
           ‹
         </button>
-        <div className="text-center bg-black/30 px-3 py-1 rounded border border-cyan-400/20">
-          <h3 className="text-lg font-semibold text-cyan-300">{currentMonth}</h3>
+        <div className="text-center bg-black/30 px-3 py-1 rounded border border-white/30"
+             style={{
+               boxShadow: '0 0 8px rgba(255,255,255,0.1)'
+             }}>
+          <h3 className="text-lg font-semibold text-white"
+              style={{ textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>
+            {currentMonth}
+          </h3>
           <p className="text-sm opacity-80">{currentYear}</p>
         </div>
         <button 
           onClick={goToNextMonth}
-          className="text-cyan-400 hover:text-cyan-300 transition-colors text-lg font-bold bg-black/30 w-8 h-8 rounded border border-cyan-400/20 hover:border-cyan-400/40"
+          className="text-white hover:text-white/80 transition-colors text-lg font-bold bg-black/30 w-8 h-8 rounded border border-white/30 hover:border-white/50"
+          style={{
+            boxShadow: '0 0 6px rgba(255,255,255,0.15)',
+            textShadow: '0 0 4px rgba(255,255,255,0.4)'
+          }}
         >
           ›
         </button>
@@ -94,9 +113,13 @@ export default function Calendar({ onDateSelect }) {
         {dayNames.map((dayName, index) => (
           <div 
             key={dayName} 
-            className={`text-xs text-center py-1 font-semibold bg-black/20 rounded border border-cyan-400/10 ${
-              index === 0 ? 'text-red-400' : index === 6 ? 'text-blue-400' : 'text-cyan-400'
+            className={`text-xs text-center py-1 font-semibold bg-black/20 rounded border border-white/20 ${
+              index === 0 ? 'text-red-300' : index === 6 ? 'text-blue-300' : 'text-white'
             }`}
+            style={{
+              textShadow: '0 0 3px rgba(255,255,255,0.3)',
+              boxShadow: '0 0 4px rgba(255,255,255,0.05)'
+            }}
           >
             {dayName}
           </div>
@@ -113,12 +136,18 @@ export default function Calendar({ onDateSelect }) {
               text-xs text-center py-2 rounded cursor-pointer transition-all border
               ${!day ? 'invisible' : ''}
               ${isToday(day) 
-                ? 'bg-cyan-400/30 text-cyan-200 font-bold shadow-lg border-cyan-400 shadow-cyan-400/30' 
-                : 'hover:bg-cyan-400/10 border-cyan-400/20 hover:border-cyan-400/40'
+                ? 'bg-white/30 text-white font-bold border-white/60' 
+                : 'hover:bg-white/10 border-white/20 hover:border-white/40'
               }
-              ${index % 7 === 0 && day ? 'text-red-400' : ''}
-              ${index % 7 === 6 && day ? 'text-blue-400' : ''}
+              ${index % 7 === 0 && day ? 'text-red-300' : ''}
+              ${index % 7 === 6 && day ? 'text-blue-300' : ''}
             `}
+            style={{
+              textShadow: day ? '0 0 3px rgba(255,255,255,0.3)' : '',
+              boxShadow: isToday(day) 
+                ? '0 0 10px rgba(255,255,255,0.2), inset 0 0 5px rgba(255,255,255,0.1)' 
+                : day ? '0 0 4px rgba(255,255,255,0.05)' : ''
+            }}
           >
             {day}
           </div>
@@ -126,8 +155,12 @@ export default function Calendar({ onDateSelect }) {
       </div>
 
       {/* 오늘 날짜 표시 */}
-      <div className="mt-3 text-center bg-black/20 rounded border border-cyan-400/20 py-2">
-        <p className="text-xs opacity-60 text-cyan-300">
+      <div className="mt-3 text-center bg-black/20 rounded border border-white/25 py-2"
+           style={{
+             boxShadow: '0 0 8px rgba(255,255,255,0.1)'
+           }}>
+        <p className="text-xs opacity-80 text-white"
+           style={{ textShadow: '0 0 3px rgba(255,255,255,0.3)' }}>
           오늘: {today.getMonth() + 1}월 {today.getDate()}일 
         </p>
       </div>
