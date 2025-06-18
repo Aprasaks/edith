@@ -18,7 +18,7 @@ export default function AnimatedHeader() {
       >
         {/* E.D.I.T.H 제목 */}
         <h1 
-          className={`text-2xl font-bold text-cyan-400 transition-opacity duration-300 absolute ${
+          className={`text-2xl font-bold text-cyan-400 transition-opacity duration-300  ${
             isHovered ? 'opacity-0' : 'opacity-100'
           }`}
         >
