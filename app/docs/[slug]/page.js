@@ -6,6 +6,7 @@ import AnimatedHeader from '../../../components/AnimatedHeader'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm' 
 import rehypeHighlight from 'rehype-highlight'
+import { getDocumentBySlug } from '../../../lib/github'
 import 'highlight.js/styles/github-dark.css'
 
 export default function DocDetailPage() {
@@ -13,279 +14,54 @@ export default function DocDetailPage() {
   const router = useRouter()
   const [doc, setDoc] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-
-  // 예시 문서 데이터 (실제로는 MDX 파일이나 CMS에서 가져올 데이터)
-  const docs = {
-    'react-hooks-guide': {
-      id: 1,
-      title: "React Hooks 완벽 가이드",
-      description: "useState, useEffect부터 커스텀 훅까지 React Hooks의 모든 것",
-      category: "React",
-      date: "2024-12-15",
-      readTime: "15min",
-      tags: ["React", "Hooks", "Frontend"],
-      status: "updated",
-      author: "DemianDev",
-      content: `
-# React Hooks 완벽 가이드
-
-React Hooks는 함수형 컴포넌트에서 상태와 생명주기 기능을 사용할 수 있게 해주는 강력한 기능입니다.
-
-## 목차
-1. [useState 훅](#usestate-훅)
-2. [useEffect 훅](#useeffect-훅)
-3. [커스텀 훅 만들기](#커스텀-훅-만들기)
-4. [최적화 팁](#최적화-팁)
-
-## useState 훅
-
-\`useState\`는 가장 기본적인 훅으로, 함수형 컴포넌트에서 상태를 관리할 수 있게 해줍니다.
-
-\`\`\`jsx
-import { useState } from 'react';
-
-function Counter() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div>
-      <p>현재 카운트: {count}</p>
-      <button onClick={() => setCount(count + 1)}>
-        증가
-      </button>
-    </div>
-  );
-}
-\`\`\`
-
-### 주요 특징
-- **불변성 유지**: 상태를 직접 수정하지 말고 항상 새로운 값으로 설정
-- **함수형 업데이트**: 이전 상태를 기반으로 업데이트할 때는 함수를 사용
-
-\`\`\`jsx
-// 좋은 예
-setCount(prevCount => prevCount + 1);
-
-// 나쁜 예
-setCount(count + 1); // 비동기 업데이트 시 문제 발생 가능
-\`\`\`
-
-## useEffect 훅
-
-\`useEffect\`는 사이드 이펙트를 처리하는 훅입니다. 컴포넌트가 렌더링된 후에 실행됩니다.
-
-\`\`\`jsx
-import { useState, useEffect } from 'react';
-
-function UserProfile({ userId }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    async function fetchUser() {
+    async function fetchDocument() {
       try {
-        const response = await fetch(\`/api/users/\${userId}\`);
-        const userData = await response.json();
-        setUser(userData);
+        setIsLoading(true)
+        setError(null)
+        
+        const slug = params.slug
+        console.log('문서 슬러그:', slug)
+        
+        const documentData = await getDocumentBySlug(slug)
+        
+        if (documentData) {
+          // GitHub API에서 가져온 데이터를 기존 형태로 변환
+          const formattedDoc = {
+            id: documentData.metadata.slug || slug,
+            title: documentData.metadata.title,
+            description: documentData.metadata.description,
+            category: documentData.metadata.category,
+            date: documentData.metadata.date,
+            readTime: documentData.metadata.readTime,
+            tags: documentData.metadata.tags || [],
+            status: documentData.metadata.status,
+            author: documentData.metadata.author,
+            content: documentData.content,
+            // 추가 정보
+            lastModified: documentData.lastModified,
+            size: documentData.size
+          }
+          
+          setDoc(formattedDoc)
+          console.log('문서 로드 성공:', formattedDoc.title)
+        } else {
+          console.log('문서를 찾을 수 없습니다:', slug)
+          setDoc(null)
+        }
       } catch (error) {
-        console.error('사용자 정보를 가져오는데 실패했습니다:', error);
+        console.error('문서 로드 실패:', error)
+        setError(error.message)
       } finally {
-        setLoading(false);
+        setIsLoading(false)
       }
     }
 
-    fetchUser();
-  }, [userId]); // userId가 변경될 때마다 실행
-
-  if (loading) return <div>로딩 중...</div>;
-  if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
-
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  );
-}
-\`\`\`
-
-### 의존성 배열 이해하기
-- **빈 배열 []**: 컴포넌트 마운트 시에만 실행
-- **배열 없음**: 매 렌더링마다 실행
-- **[value]**: value가 변경될 때마다 실행
-
-## 커스텀 훅 만들기
-
-반복되는 로직을 커스텀 훅으로 추출하여 재사용할 수 있습니다.
-
-\`\`\`jsx
-// hooks/useLocalStorage.js
-import { useState, useEffect } from 'react';
-
-function useLocalStorage(key, initialValue) {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error('localStorage에서 데이터를 읽는데 실패했습니다:', error);
-      return initialValue;
+    if (params.slug) {
+      fetchDocument()
     }
-  });
-
-  const setValue = (value) => {
-    try {
-      setStoredValue(value);
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.error('localStorage에 데이터를 저장하는데 실패했습니다:', error);
-    }
-  };
-
-  return [storedValue, setValue];
-}
-
-export default useLocalStorage;
-\`\`\`
-
-### 사용 예시
-
-\`\`\`jsx
-import useLocalStorage from './hooks/useLocalStorage';
-
-function Settings() {
-  const [theme, setTheme] = useLocalStorage('theme', 'light');
-  const [language, setLanguage] = useLocalStorage('language', 'ko');
-
-  return (
-    <div>
-      <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-        <option value="light">라이트</option>
-        <option value="dark">다크</option>
-      </select>
-      
-      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-        <option value="ko">한국어</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-  );
-}
-\`\`\`
-
-## 최적화 팁
-
-### 1. 불필요한 리렌더링 방지
-
-\`\`\`jsx
-import { memo, useCallback, useMemo } from 'react';
-
-const ExpensiveComponent = memo(({ data, onUpdate }) => {
-  const processedData = useMemo(() => {
-    return data.map(item => ({
-      ...item,
-      processed: true
-    }));
-  }, [data]);
-
-  return (
-    <div>
-      {processedData.map(item => (
-        <div key={item.id} onClick={() => onUpdate(item.id)}>
-          {item.name}
-        </div>
-      ))}
-    </div>
-  );
-});
-\`\`\`
-
-### 2. 조건부 실행
-
-\`\`\`jsx
-useEffect(() => {
-  if (!shouldFetch) return;
-  
-  fetchData();
-}, [shouldFetch, fetchData]);
-\`\`\`
-
-### 3. 클린업 함수 활용
-
-\`\`\`jsx
-useEffect(() => {
-  const timer = setInterval(() => {
-    console.log('1초마다 실행');
-  }, 1000);
-
-  // 클린업 함수
-  return () => {
-    clearInterval(timer);
-  };
-}, []);
-\`\`\`
-
-## 마무리
-
-React Hooks는 함수형 컴포넌트의 가능성을 크게 확장시켜주는 강력한 도구입니다. 
-올바른 사용법을 익히고 최적화 기법을 적용하면 더욱 효율적인 React 애플리케이션을 만들 수 있습니다.
-
-다음에는 고급 훅들인 \`useReducer\`, \`useContext\`, \`useRef\` 등에 대해서도 알아보겠습니다.
-      `
-    },
-    'nextjs-app-router': {
-      id: 2,
-      title: "Next.js 14 App Router 마이그레이션",
-      description: "Pages Router에서 App Router로 안전하게 마이그레이션하는 방법",
-      category: "Next.js",
-      date: "2024-12-10",
-      readTime: "20min",
-      tags: ["Next.js", "Migration", "App Router"],
-      status: "new",
-      author: "DemianDev",
-      content: `
-# Next.js 14 App Router 마이그레이션 가이드
-
-Next.js 13에서 도입된 App Router가 이제 안정화되었습니다. Pages Router에서 App Router로 마이그레이션하는 방법을 알아봅시다.
-
-## 주요 변화점
-
-### 1. 폴더 구조
-- \`pages/\` → \`app/\`
-- 파일 기반 라우팅은 동일하지만 규칙이 변경
-
-### 2. 레이아웃 시스템
-App Router에서는 중첩된 레이아웃을 쉽게 만들 수 있습니다.
-
-\`\`\`jsx
-// app/layout.js
-export default function RootLayout({ children }) {
-  return (
-    <html lang="ko">
-      <body>
-        <header>공통 헤더</header>
-        {children}
-        <footer>공통 푸터</footer>
-      </body>
-    </html>
-  )
-}
-\`\`\`
-
-이런 식으로 더 자세한 내용을 작성할 수 있습니다...
-      `
-    }
-  }
-
-  useEffect(() => {
-    // URL의 slug 파라미터로 문서 찾기
-    const slug = params.slug
-    const foundDoc = docs[slug]
-    
-    if (foundDoc) {
-      setDoc(foundDoc)
-    }
-    setIsLoading(false)
   }, [params.slug])
 
   if (isLoading) {
@@ -295,7 +71,7 @@ export default function RootLayout({ children }) {
         <div className="text-center">
           <div className="animate-pulse text-white text-xl mb-4"
                style={{ textShadow: '0 0 5px rgba(255,255,255,0.4)' }}>
-            문서를 불러오는 중...
+            GitHub에서 문서를 불러오는 중...
           </div>
           <div className="flex justify-center space-x-1">
             <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse"
@@ -304,6 +80,56 @@ export default function RootLayout({ children }) {
                  style={{ animationDelay: '0.2s', boxShadow: '0 0 4px rgba(255,255,255,0.6)' }}></div>
             <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse" 
                  style={{ animationDelay: '0.4s', boxShadow: '0 0 4px rgba(255,255,255,0.6)' }}></div>
+          </div>
+          <p className="text-white/60 text-sm mt-4">
+            edith-docs 레포지토리에서 가져오는 중...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-white relative overflow-hidden"
+           style={{ textShadow: '0 0 3px rgba(255,255,255,0.3)' }}>
+        {/* 배경 효과 */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `
+              linear-gradient(white 1px, transparent 1px),
+              linear-gradient(90deg, white 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}
+        ></div>
+
+        <AnimatedHeader />
+        
+        <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
+          <div className="text-center max-w-md">
+            <h1 className="text-4xl font-bold text-red-400 mb-4"
+                style={{ textShadow: '0 0 8px rgba(239, 68, 68, 0.5)' }}>에러</h1>
+            <p className="text-white/80 text-lg mb-4">문서를 불러오는 중 오류가 발생했습니다</p>
+            <p className="text-red-300 text-sm mb-6 bg-red-900/20 p-3 rounded border border-red-500/30">
+              {error}
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button 
+                onClick={() => window.location.reload()}
+                className="bg-red-600/20 border border-red-500/40 text-red-300 px-4 py-2 rounded-lg hover:bg-red-600/30 transition-colors"
+              >
+                다시 시도
+              </button>
+              <button 
+                onClick={() => router.push('/docs')}
+                className="bg-white/20 border border-white/40 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-colors"
+              >
+                ← 문서 목록으로
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -333,7 +159,10 @@ export default function RootLayout({ children }) {
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4"
                 style={{ textShadow: '0 0 8px rgba(255,255,255,0.5)' }}>404</h1>
-            <p className="text-white/80 text-lg mb-6">문서를 찾을 수 없습니다</p>
+            <p className="text-white/80 text-lg mb-2">문서를 찾을 수 없습니다</p>
+            <p className="text-white/60 text-sm mb-6">
+              요청한 문서가 edith-docs 레포지토리에 존재하지 않습니다.
+            </p>
             <button 
               onClick={() => router.push('/docs')}
               className="bg-white/20 border border-white/40 text-white px-6 py-2 rounded-lg hover:bg-white/30 transition-colors font-semibold"
@@ -397,6 +226,15 @@ export default function RootLayout({ children }) {
           문서 목록으로 돌아가기
         </button>
 
+        {/* GitHub 소스 표시 */}
+        <div className="mb-4 text-xs text-white/40 flex items-center gap-2">
+          <span>📁 GitHub:</span>
+          <span>edith-docs/{doc.category?.toLowerCase()}/{params.slug}.md</span>
+          {doc.lastModified && (
+            <span className="ml-auto">SHA: {doc.lastModified.slice(0, 7)}</span>
+          )}
+        </div>
+
         {/* 문서 헤더 */}
         <header className="mb-8">
           <div className="flex items-center gap-4 mb-4">
@@ -423,6 +261,7 @@ export default function RootLayout({ children }) {
             <span>⏱️ {doc.readTime}</span>
             <span>✍️ {doc.author}</span>
             <span>📁 {doc.category}</span>
+            {doc.size && <span>📄 {(doc.size / 1024).toFixed(1)}KB</span>}
           </div>
 
           {/* 태그 */}
@@ -495,19 +334,36 @@ export default function RootLayout({ children }) {
           <div className="flex items-center justify-between">
             <div className="text-white/60 text-sm">
               마지막 업데이트: {doc.date}
+              {doc.lastModified && (
+                <span className="ml-4 text-white/40">
+                  Git SHA: {doc.lastModified.slice(0, 7)}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-4">
-              <button className="text-white/80 hover:text-white transition-colors text-sm"
-                      style={{ textShadow: '0 0 3px rgba(255,255,255,0.4)' }}>
-                📤 공유하기
+              <button 
+                onClick={() => {
+                  const githubUrl = `https://github.com/Aprasaks/edith-docs/blob/main/${doc.category?.toLowerCase()}/${params.slug}.md`
+                  window.open(githubUrl, '_blank')
+                }}
+                className="text-white/80 hover:text-white transition-colors text-sm"
+                style={{ textShadow: '0 0 3px rgba(255,255,255,0.4)' }}
+              >
+                📤 GitHub에서 보기
+              </button>
+              <button 
+                onClick={() => {
+                  const githubEditUrl = `https://github.com/Aprasaks/edith-docs/edit/main/${doc.category?.toLowerCase()}/${params.slug}.md`
+                  window.open(githubEditUrl, '_blank')
+                }}
+                className="text-white/80 hover:text-white transition-colors text-sm"
+                style={{ textShadow: '0 0 3px rgba(255,255,255,0.4)' }}
+              >
+                📝 GitHub에서 수정
               </button>
               <button className="text-white/80 hover:text-white transition-colors text-sm"
                       style={{ textShadow: '0 0 3px rgba(255,255,255,0.4)' }}>
                 ⭐ 즐겨찾기
-              </button>
-              <button className="text-white/80 hover:text-white transition-colors text-sm"
-                      style={{ textShadow: '0 0 3px rgba(255,255,255,0.4)' }}>
-                📝 수정 제안
               </button>
             </div>
           </div>

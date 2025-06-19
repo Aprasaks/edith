@@ -22,7 +22,7 @@ export default function AnimatedHeader() {
           textShadow: '0 0 4px rgba(255,255,255,0.4)'
         }}
       >
-        ☕ Buy me a coffee
+        ☕ Buy
       </a>
 
       {/* 중앙 - 제목/네비게이션 영역 */}
