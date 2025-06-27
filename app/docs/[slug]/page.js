@@ -28,7 +28,6 @@ export default function DocDetailPage() {
         const documentData = await getDocumentBySlug(slug)
         
         if (documentData) {
-          // GitHub API에서 가져온 데이터를 기존 형태로 변환
           const formattedDoc = {
             id: documentData.metadata.slug || slug,
             title: documentData.metadata.title,
@@ -40,7 +39,6 @@ export default function DocDetailPage() {
             status: documentData.metadata.status,
             author: documentData.metadata.author,
             content: documentData.content,
-            // 추가 정보
             lastModified: documentData.lastModified,
             size: documentData.size
           }
@@ -64,6 +62,7 @@ export default function DocDetailPage() {
     }
   }, [params.slug])
 
+  // 로딩 및 에러 처리는 기존과 동일...
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center"
@@ -93,7 +92,6 @@ export default function DocDetailPage() {
     return (
       <div className="min-h-screen bg-black text-white relative overflow-hidden"
            style={{ textShadow: '0 0 3px rgba(255,255,255,0.3)' }}>
-        {/* 배경 효과 */}
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
         <div 
           className="absolute inset-0 opacity-5"
@@ -140,7 +138,6 @@ export default function DocDetailPage() {
     return (
       <div className="min-h-screen bg-black text-white relative overflow-hidden"
            style={{ textShadow: '0 0 3px rgba(255,255,255,0.3)' }}>
-        {/* 배경 효과 */}
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
         <div 
           className="absolute inset-0 opacity-5"
@@ -195,6 +192,178 @@ export default function DocDetailPage() {
       case 'popular': return 'POPULAR'
       default: return 'DOCS'
     }
+  }
+
+  // 커스텀 마크다운 컴포넌트들
+  const markdownComponents = {
+    // 제목들
+    h1: ({ children }) => (
+      <h1 className="text-4xl font-bold text-white mb-6 mt-8 border-b border-white/20 pb-3">
+        {children}
+      </h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-3xl font-semibold text-white mb-4 mt-8">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-2xl font-semibold text-white mb-3 mt-6">
+        {children}
+      </h3>
+    ),
+    h4: ({ children }) => (
+      <h4 className="text-xl font-semibold text-white mb-2 mt-4">
+        {children}
+      </h4>
+    ),
+    h5: ({ children }) => (
+      <h5 className="text-lg font-semibold text-white mb-2 mt-3">
+        {children}
+      </h5>
+    ),
+    h6: ({ children }) => (
+      <h6 className="text-base font-semibold text-white mb-2 mt-3">
+        {children}
+      </h6>
+    ),
+    
+    // 텍스트
+    p: ({ children }) => (
+      <p className="text-white/90 text-lg leading-relaxed mb-4">
+        {children}
+      </p>
+    ),
+    
+    // 링크
+    a: ({ children, href }) => (
+      <a 
+        href={href} 
+        className="text-blue-300 hover:text-blue-200 underline underline-offset-2 transition-colors"
+        target={href?.startsWith('http') ? '_blank' : undefined}
+        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+    
+    // 강조
+    strong: ({ children }) => (
+      <strong className="text-white font-semibold">
+        {children}
+      </strong>
+    ),
+    
+    em: ({ children }) => (
+      <em className="text-white/95 italic">
+        {children}
+      </em>
+    ),
+    
+    // 코드
+    code: ({ children, className }) => {
+      // 인라인 코드와 코드 블록 구분
+      const isCodeBlock = className && className.includes('language-')
+      
+      if (isCodeBlock) {
+        return (
+          <code className={className}>
+            {children}
+          </code>
+        )
+      }
+      
+      return (
+        <code className="text-green-300 bg-black/60 px-2 py-1 rounded text-base font-mono">
+          {children}
+        </code>
+      )
+    },
+    
+    pre: ({ children }) => (
+      <pre className="bg-black/80 border border-white/20 rounded-lg p-4 overflow-x-auto mb-6 text-sm">
+        {children}
+      </pre>
+    ),
+    
+    // 리스트
+    ul: ({ children }) => (
+      <ul className="text-white/90 text-lg mb-4 space-y-2 list-disc list-inside">
+        {children}
+      </ul>
+    ),
+    
+    ol: ({ children }) => (
+      <ol className="text-white/90 text-lg mb-4 space-y-2 list-decimal list-inside">
+        {children}
+      </ol>
+    ),
+    
+    li: ({ children }) => (
+      <li className="text-white/90 mb-1 leading-relaxed">
+        {children}
+      </li>
+    ),
+    
+    // 인용구
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-4 border-white/40 pl-4 text-white/80 italic mb-6 bg-white/5 py-2 rounded-r">
+        {children}
+      </blockquote>
+    ),
+    
+    // 구분선
+    hr: () => (
+      <hr className="border-white/20 my-8" />
+    ),
+    
+    // 테이블
+    table: ({ children }) => (
+      <div className="overflow-x-auto mb-6">
+        <table className="min-w-full text-white/90 text-base">
+          {children}
+        </table>
+      </div>
+    ),
+    
+    thead: ({ children }) => (
+      <thead className="border-b border-white/20">
+        {children}
+      </thead>
+    ),
+    
+    tbody: ({ children }) => (
+      <tbody className="divide-y divide-white/10">
+        {children}
+      </tbody>
+    ),
+    
+    tr: ({ children }) => (
+      <tr className="hover:bg-white/5 transition-colors">
+        {children}
+      </tr>
+    ),
+    
+    th: ({ children }) => (
+      <th className="px-4 py-3 text-left font-semibold text-white">
+        {children}
+      </th>
+    ),
+    
+    td: ({ children }) => (
+      <td className="px-4 py-3 text-white/90">
+        {children}
+      </td>
+    ),
+
+    // 이미지
+    img: ({ src, alt }) => (
+      <image 
+        src={src} 
+        alt={alt} 
+        className="max-w-full h-auto rounded-lg border border-white/20 mb-4"
+      />
+    )
   }
 
   return (
@@ -284,45 +453,11 @@ export default function DocDetailPage() {
         {/* 문서 내용 */}
         <article className="bg-black/30 border border-white/25 rounded-xl p-8 backdrop-blur-sm"
                  style={{ boxShadow: '0 0 15px rgba(255,255,255,0.1)' }}>
-          <div 
-            className="prose prose-lg prose-invert max-w-none
-              prose-headings:text-white prose-headings:font-semibold
-              prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8
-              prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-8
-              prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-6
-              prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-4
-              prose-p:text-white/90 prose-p:leading-relaxed prose-p:text-lg prose-p:mb-4
-              prose-code:text-green-300 prose-code:bg-black/60 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-base
-              prose-pre:bg-black/80 prose-pre:border prose-pre:border-white/20 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:mb-6
-              prose-blockquote:border-l-white/40 prose-blockquote:text-white/80 prose-blockquote:pl-4 prose-blockquote:mb-6
-              prose-strong:text-white prose-strong:font-semibold
-              prose-a:text-blue-300 prose-a:no-underline hover:prose-a:text-blue-200
-              prose-ul:text-white/90 prose-ul:text-lg prose-ul:mb-4 prose-ul:space-y-2
-              prose-ol:text-white/90 prose-ol:text-lg prose-ol:mb-4 prose-ol:space-y-2
-              prose-li:text-white/90 prose-li:mb-1
-              prose-table:text-white/90 prose-table:text-lg
-              prose-thead:border-white/20
-              prose-tbody:border-white/20
-            "
-            style={{ 
-              textShadow: '0 0 2px rgba(255,255,255,0.3)',
-              lineHeight: '1.8'
-            }}
-          >
+          <div className="markdown-content">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
-              components={{
-                h1: ({children}) => <h1 style={{fontSize: '2.25rem', marginBottom: '1.5rem', color: 'white', fontWeight: '600'}}>{children}</h1>,
-                h2: ({children}) => <h2 style={{fontSize: '1.875rem', marginBottom: '1rem', marginTop: '2rem', color: 'white', fontWeight: '600'}}>{children}</h2>,
-                h3: ({children}) => <h3 style={{fontSize: '1.5rem', marginBottom: '0.75rem', marginTop: '1.5rem', color: 'white', fontWeight: '600'}}>{children}</h3>,
-                p: ({children}) => <p style={{fontSize: '1.125rem', marginBottom: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: '1.75'}}>{children}</p>,
-                ul: ({children}) => <ul style={{fontSize: '1.125rem', marginBottom: '1rem', color: 'rgba(255,255,255,0.9)'}}>{children}</ul>,
-                ol: ({children}) => <ol style={{fontSize: '1.125rem', marginBottom: '1rem', color: 'rgba(255,255,255,0.9)'}}>{children}</ol>,
-                li: ({children}) => <li style={{marginBottom: '0.25rem', color: 'rgba(255,255,255,0.9)'}}>{children}</li>,
-                strong: ({children}) => <strong style={{color: 'white', fontWeight: '600'}}>{children}</strong>,
-                a: ({children, href}) => <a href={href} style={{color: 'rgb(147, 197, 253)', textDecoration: 'none'}}>{children}</a>
-              }}
+              components={markdownComponents}
             >
               {doc.content}
             </ReactMarkdown>
